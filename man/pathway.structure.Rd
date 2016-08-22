@@ -2,19 +2,27 @@
 % Please edit documentation in R/pathway.structure.R
 \name{Tests of Pathway Structure in iGraph}
 \alias{Tests of Pathway Structure in iGraph}
-\alias{pathway_test}
+\alias{matrix.structure}
+\alias{permutation.structure}
+\alias{test.structure}
 \title{Extensions to iGraph for Pathway Structure}
 \usage{
-pathway_test(graph, target_node, source_node, shortest.paths.in = NULL)
+test.structure(graph, target_node, source_node, shortest.paths.in = NULL)
+
+matrix.structure(graph, target_vec, source_vec,
+  pathway_structure_nodes = NULL, shortest.paths.in = NULL)
+
+permutation.structure(graph, target, source, universe,
+  shortest.paths.in = NULL, reps = 1000)
 }
 \arguments{
 \item{graph}{An \code{\link[igraph]{igraph}} object. May be directed or weighted as long as a shortest path can be computed.}
 
 \item{shortest.paths.in}{Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.}
 
-\item{target}{string: vector of target states for testing pathway stucture. Must be a single string for target_node. These are cross referenced against V(graph)$name.}
+\item{target}{string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.}
 
-\item{source}{string: vector of source states for testing pathway stucture. Must be a single string for source_node. These are cross referenced against V(graph)$name.}
+\item{source}{string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.}
 
 \item{universe}{string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.}
 
@@ -33,7 +41,15 @@ g2 <- make_star(10)
 V(g2)$name <- letters[1:10]
 
 #test pathway structure between two points
-pathway_test(g1, "a", "c")
-pathway_test(g2, "a", "c")
+test.structure(g1, "a", "c")
+test.structure(g2, "a", "c")
+
+#test pathway structure between two vectors of points
+matrix.structure(g1, letters[1:5], letters[5:7])
+matrix.structure(g2, letters[1:5], letters[5:7])
+
+#test pathway structure between two vectors of points with permutations
+permutation.structure(g1, letters[1:5], letters[5:7], letters)
+permutation.structure(g2, letters[1:5], letters[5:7], letters)
 }
 

@@ -1,20 +1,20 @@
 ##' @name Tests of Pathway Structure in iGraph
-##' @rdname pathway_test
+##' @rdname pathway.structure
 ##'
 ##' @title Extensions to iGraph for Pathway Structure
 ##'
 ##' @description Functions to compute the pathway structure of different states within a network with testing pathway structure with permutation analysis. Uses shortest paths to compute the structure between nodes of differing states. Shortest paths are computed in advance where possible to reduce computational redundancy.
 ##'
 ##' @param graph An \code{\link[igraph]{igraph}} object. May be directed or weighted as long as a shortest path can be computed.
-##' @param target string: vector of target states for testing pathway stucture. Must be a single string for target_node. These are cross referenced against V(graph)$name.
-##' @param source string: vector of source states for testing pathway stucture. Must be a single string for source_node. These are cross referenced against V(graph)$name.
+##' @param target string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.
+##' @param source string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.
 ##' @param universe string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.
 ##' @param shortest.paths.in Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.
 ##' @param reps scalar numeric. Number of permutations to statistically test the structure of the network.
 ##' @import igraph
 NULL
 
-##' @rdname pathway_test
+##' @rdname pathway.structure
 ##' @examples
 ##'
 ##' #generate example graphs
@@ -25,10 +25,10 @@ NULL
 ##' V(g2)$name <- letters[1:10]
 ##'
 ##' #test pathway structure between two points
-##' pathway_test(g1, "a", "c")
-##' pathway_test(g2, "a", "c")
+##' test.structure(g1, "a", "c")
+##' test.structure(g2, "a", "c")
 ##' @export
-pathway_test <- function(graph, target_node, source_node, shortest.paths.in = NULL){
+test.structure <- function(graph, target_node, source_node, shortest.paths.in = NULL){
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
   target_to_source_vec <- shortest.paths.in[match(source_node, rownames(shortest.paths.in)), match(target_node, colnames(shortest.paths.in))]
   source_to_target_vec <- shortest.paths.in[match(target_node, rownames(shortest.paths.in)), match(source_node, colnames(shortest.paths.in))]
@@ -38,62 +38,68 @@ pathway_test <- function(graph, target_node, source_node, shortest.paths.in = NU
   return(source_status)
 }
 
-##' @rdname pathway_test_matrix
+##' @rdname pathway.structure
 ##' @examples
 ##'
 ##' #test pathway structure between two vectors of points
-##' pathway_test_matrix(g1, letters[1:5], letters[5:7])
-##' pathway_test_matrix(g2, letters[1:5], letters[5:7])
+##' matrix.structure(g1, letters[1:5], letters[5:7])
+##' matrix.structure(g2, letters[1:5], letters[5:7])
 ##' @export
-pathway_test_matrix <- function(graph, target_vec, source_vec, pathway_nodes=NULL, shortest.paths.in = NULL){
+matrix.structure <- function(graph, target_vec, source_vec, pathway_structure_nodes=NULL, shortest.paths.in = NULL){
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
-  if(is.null(pathway_nodes)) pathway_nodes <- names(V(graph))
+  if(is.null(pathway_structure_nodes)) pathway_structure_nodes <- names(V(graph))
   overlap <- intersect(target_vec, source_vec)
   target_vec <- setdiff(target_vec, overlap)
   source_vec <- setdiff(source_vec, overlap)
-  test_matrix <- matrix(NA, nrow=length(target_vec[target_vec %in% pathway_nodes]),
-                        ncol=length(source_vec[source_vec %in% pathway_nodes]))
+  test_matrix <- matrix(NA, nrow=length(target_vec[target_vec %in% pathway_structure_nodes]),
+                        ncol=length(source_vec[source_vec %in% pathway_structure_nodes]))
   dim(test_matrix)
-  for(ii in 1:length(target_vec[target_vec %in% pathway_nodes])){
-    for(jj in 1:length(source_vec[source_vec %in% pathway_nodes])){
-      test_matrix[ii,jj] <- pathway_test(graph, target_vec[target_vec %in% pathway_nodes][ii],
-                                          source_vec[source_vec %in% pathway_nodes][jj],
+  for(ii in 1:length(target_vec[target_vec %in% pathway_structure_nodes])){
+    for(jj in 1:length(source_vec[source_vec %in% pathway_structure_nodes])){
+      test_matrix[ii,jj] <- test.structure(graph, target_vec[target_vec %in% pathway_structure_nodes][ii],
+                                          source_vec[source_vec %in% pathway_structure_nodes][jj],
                                          shortest.paths.in = shortest.paths.in)
     }
     print(ii)
   }
-  rownames(test_matrix) <- target_vec[target_vec %in% pathway_nodes]
-  colnames(test_matrix) <- source_vec[source_vec %in% pathway_nodes]
+  rownames(test_matrix) <- target_vec[target_vec %in% pathway_structure_nodes]
+  colnames(test_matrix) <- source_vec[source_vec %in% pathway_structure_nodes]
   print(table(test_matrix))
   return(test_matrix)
 }
 
-##' @rdname test_permutation
+##' @rdname pathway.structure
 ##' @examples
 ##'
 ##' #test pathway structure between two vectors of points with permutations
-##' pathway_test_permutation(g1, letters[1:5], letters[5:7], letters)
-##' pathway_test_permutation(g2, letters[1:5], letters[5:7], letters)
+##' permutation.structure(g1, letters[1:5], letters[5:7], letters)
+##' permutation.structure(g2, letters[1:5], letters[5:7], letters)
 ##' @export
-pathway_test_permutation <- function(graph, target, source, universe, shortest.paths.in = NULL, reps=1000){
+permutation.structure <- function(graph, target, source, universe, shortest.paths.in = NULL, reps=1000){
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
   hits_up_minus_down <- rep(NA, reps)
+  hits_up <- rep(NA, reps)
+  hits_down <- rep(NA, reps)
   for(ii in 1:reps){
     target_sim <- sample(universe, length(target))
     source_sim <- sample(universe, length(source))
-    test_matrix <- pathway_test_matrix(graph, target_sim, source_sim, shortest.paths.in = shortest.paths.in)
+    test_matrix <- matrix.structure(graph, target_sim, source_sim, shortest.paths.in = shortest.paths.in)
     hits <- as.list(table(test_matrix))
-    hits_up_minus_down[ii] <- ifelse(is.null(hits$up), 0, hits$up) - ifelse(is.null(hits$down), 0, hits$down)
+    hits_down[ii] <- ifelse(is.null(hits$down), 0, hits$down)
+    hits_up[ii] <- ifelse(is.null(hits$up), 0, hits$up)
+    hits_up_minus_down[ii] <- hits_up[ii] - hits_down[ii]
     print(ii)
   }
-  test_matrix <- pathway_test_matrix(graph, target, source, shortest.paths.in = shortest.paths.in)
+  test_matrix <- matrix.structure(graph, target, source, shortest.paths.in = shortest.paths.in)
   hits <- as.list(table(test_matrix))
   hits$up - hits$down
-  abline(v=hits$up - hits$down)
-  print(paste(sum(hits$up - hits$down < hits_up_minus_down) / length(hits_up_minus_down), "target downstream"))
-  print(paste(sum(hits_up_minus_down < hits$up - hits$down) / length(hits_up_minus_down), "target upstream"))
+  print(paste(sum(hits$up - hits$down < hits_up_minus_down) / length(hits_up_minus_down), "target upstream"))
+  print(paste(sum(hits_up_minus_down < hits$up - hits$down) / length(hits_up_minus_down), "target downstream"))
   table_obj <- list()
-  table_obj$down <- sum(hits$up - hits$down < hits_up_minus_down) / length(hits_up_minus_down)
-  table_obj$up <- sum(hits_up_minus_down < hits$up - hits$down) / length(hits_up_minus_down)
+  table_obj$up <- sum(hits$up - hits$down < hits_up_minus_down) / length(hits_up_minus_down)
+  table_obj$down <- sum(hits_up_minus_down < hits$up - hits$down) / length(hits_up_minus_down)
+  table_obj$obs <- list(hits$down, hits$up)
+  table_obj$exp <- list(hits_down, hits_up)
+  names(table_obj$exp) <- names(table_obj$obs) <- c("down", "up")
   return(table_obj)
 }
