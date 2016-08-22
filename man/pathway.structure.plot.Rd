@@ -5,20 +5,26 @@
 \alias{pathway_perm_lines_density}
 \alias{pathway_perm_plot_density}
 \alias{pathway_perm_plot_raw}
+\alias{permutation.structure.proportion}
 \title{Extensions to iGraph for Plotting Pathway Structure}
 \usage{
+pathway_perm_plot_density(table_obj, method = "absolute", main = NULL,
+  sub = NULL, xlab = "up - down events", ylab = "density", cex.lab = 1,
+  guide = TRUE, legend = TRUE, annotate = TRUE, cex.legend = 1,
+  cex.annotation = 1, col = "black")
+
+pathway_perm_lines_density(table_obj, method = "absolute", col = "black")
+
 pathway_perm_plot_raw(table_obj, main = NULL, sub = NULL,
   xlab = "up events", ylab = "down events", cex.lab = 1, col = "black",
   cex = 1, pch = 1)
 
-pathway_perm_plot_density(table_obj, main = NULL, xlab = "up - down events",
-  ylab = "density", cex.lab = 1, guide = TRUE, legend = TRUE,
-  annotate = TRUE, cex.legend = 1, cex.annotation = 1, col = "black")
-
-pathway_perm_lines_density(table_obj, col = "black")
+permutation.structure.proportion(table_obj, method = "absolute")
 }
 \arguments{
 \item{table_obj}{List. Output of \code{\link[permutation.structure.permutation]{pathway.structure}}}
+
+\item{method}{Specifies metric for comparision of up and down events: "absolute" (1) for difference or "relative" (2) ratio. May be given as a character or numeric input. Defaults to absolute.}
 
 \item{main, sub, xlab, ylab, cex.lab, col, cex, pch}{Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}}
 
@@ -48,9 +54,6 @@ matrix.structure(graph, source, target)
 table(matrix.structure(graph, source, target))
 perm_table <- permutation.structure(graph, source, target, letters)
 
-#Plot Raw Output of Permutation Test
-pathway_perm_plot_raw(perm_table)
-
 #Plot Density Output of Permutation Test
 pathway_perm_plot_density(perm_table)
 
@@ -59,5 +62,11 @@ perm_table <- permutation.structure(graph, source, target, letters)
 pathway_perm_plot_density(perm_table)
 perm_table2 <- permutation.structure(graph, source, target, letters, fixed_intersect = T)
 pathway_perm_lines_density(perm_table2, col="lightblue")
+
+#Plot Raw Output of Permutation Test
+pathway_perm_plot_raw(perm_table)
+
+permutation.structure.proportion(perm_table) # defaults to absolute
+permutation.structure.proportion(perm_table, method = "relative")
 }
 
