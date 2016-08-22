@@ -33,6 +33,8 @@ test.structure <- function(graph, target_node, source_node, shortest.paths.in = 
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
   target_to_source_vec <- shortest.paths.in[match(source_node, rownames(shortest.paths.in)), match(target_node, colnames(shortest.paths.in))]
   source_to_target_vec <- shortest.paths.in[match(target_node, rownames(shortest.paths.in)), match(source_node, colnames(shortest.paths.in))]
+  if(is.na(target_to_source_vec)) target_to_source_vec <- 0
+  if(is.na(source_to_target_vec)) source_to_target_vec <- 0
   if(target_to_source_vec==0) target_to_source_vec <- Inf
   if(source_to_target_vec==0) source_to_target_vec <- Inf
   source_status <- ifelse(target_to_source_vec > source_to_target_vec, "down", ifelse(target_to_source_vec < source_to_target_vec, "up", "loop"))
@@ -55,16 +57,21 @@ matrix.structure <- function(graph, target_vec, source_vec, pathway_structure_no
   test_matrix <- matrix(NA, nrow=length(target_vec[target_vec %in% pathway_structure_nodes]),
                         ncol=length(source_vec[source_vec %in% pathway_structure_nodes]))
   dim(test_matrix)
-  for(ii in 1:length(target_vec[target_vec %in% pathway_structure_nodes])){
-    for(jj in 1:length(source_vec[source_vec %in% pathway_structure_nodes])){
-      test_matrix[ii,jj] <- test.structure(graph, target_vec[target_vec %in% pathway_structure_nodes][ii],
-                                          source_vec[source_vec %in% pathway_structure_nodes][jj],
-                                         shortest.paths.in = shortest.paths.in)
+  if(nrow(test_matrix)*ncol(test_matrix)==0){
+    test_matrix <- "no paths"
+    warning("missing simulated states to draw paths")
+  } else {
+    for(ii in 1:length(target_vec[target_vec %in% pathway_structure_nodes])){
+      for(jj in 1:length(source_vec[source_vec %in% pathway_structure_nodes])){
+        test_matrix[ii,jj] <- test.structure(graph, target_vec[target_vec %in% pathway_structure_nodes][ii],
+                                             source_vec[source_vec %in% pathway_structure_nodes][jj],
+                                             shortest.paths.in = shortest.paths.in)
+      }
+      print(ii)
     }
-    print(ii)
+    rownames(test_matrix) <- target_vec[target_vec %in% pathway_structure_nodes]
+    colnames(test_matrix) <- source_vec[source_vec %in% pathway_structure_nodes]
   }
-  rownames(test_matrix) <- target_vec[target_vec %in% pathway_structure_nodes]
-  colnames(test_matrix) <- source_vec[source_vec %in% pathway_structure_nodes]
   print(table(test_matrix))
   return(test_matrix)
 }
