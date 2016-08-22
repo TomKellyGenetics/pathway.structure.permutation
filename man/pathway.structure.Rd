@@ -13,7 +13,7 @@ matrix.structure(graph, target_vec, source_vec,
   pathway_structure_nodes = NULL, shortest.paths.in = NULL)
 
 permutation.structure(graph, target, source, universe,
-  shortest.paths.in = NULL, reps = 1000)
+  shortest.paths.in = NULL, reps = 1000, fixed_intersect = FALSE)
 }
 \arguments{
 \item{graph}{An \code{\link[igraph]{igraph}} object. May be directed or weighted as long as a shortest path can be computed.}
@@ -27,6 +27,8 @@ permutation.structure(graph, target, source, universe,
 \item{universe}{string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.}
 
 \item{reps}{scalar numeric. Number of permutations to statistically test the structure of the network.}
+
+\item{fixed_intersect}{logical. Defaults to FALSE. Whether number of intersecting states is fixed to the same in permutations as the input states.}
 }
 \description{
 Functions to compute the pathway structure of different states within a network with testing pathway structure with permutation analysis. Uses shortest paths to compute the structure between nodes of differing states. Shortest paths are computed in advance where possible to reduce computational redundancy.

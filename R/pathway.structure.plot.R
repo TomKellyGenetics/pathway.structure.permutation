@@ -6,8 +6,10 @@
 ##' @description Functions to plot outcomes for testing pathway structure with permutation analysis.
 ##'
 ##'
-##' @param table_obj List. Output of \code{\link[permutation.structure]{pathway.structure.permuation}}
-##' @param main,sub,xlab,ylab,col,cex,pch Arguments to passs on to \code{\link[plot]{graphics}} or \code{\link[plot.density]{stats}}
+##' @param table_obj List. Output of \code{\link[permutation.structure.permutation]{pathway.structure}}
+##' @param main,sub,xlab,ylab,cex.lab,col,cex,pch Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}
+##' @param guide,legend,annotate Logical. Whether guide lines, legend, or p-value annotation is included on the density plot. Default to TRUE.
+##' @param cex.legend,cex.annotation numeric. Relative expansion of legend and annotation test in density plot.
 ##' @import igraph
 NULL
 
@@ -34,9 +36,9 @@ NULL
 ##' #Plot Raw Output of Permutation Test
 ##' pathway_perm_plot_raw(perm_table)
 ##' @export
-pathway_perm_plot_raw <- function(table_obj, main = NULL, sub = NULL, xlab="up events", ylab="down events", col = "black", cex = 1, pch = 19){
-  plot(test_perm$exp$up, test_perm$exp$down, main = main, sub = sub, xlab = xlab, ylab = ylab, col = col, cex = cex, pch = pch)
-  points(test_perm$obs$up, test_perm$obs$down, col="red")
+pathway_perm_plot_raw <- function(table_obj, main = NULL, sub = NULL, xlab="up events", ylab="down events", cex.lab = 1, col = "black", cex = 1, pch = 1){
+  plot(table_obj$exp$up, table_obj$exp$down, main = main, sub = sub, xlab = xlab, ylab = ylab, cex.lab = cex.lab, col = col, cex = cex, pch = pch)
+  points(table_obj$obs$up, table_obj$obs$down, col="red")
   legend("topright", fill=c("red", "black"), legend=c("observed", "expected"))
 }
 
@@ -46,15 +48,35 @@ pathway_perm_plot_raw <- function(table_obj, main = NULL, sub = NULL, xlab="up e
 ##' #Plot Density Output of Permutation Test
 ##' pathway_perm_plot_density(perm_table)
 ##' @export
-pathway_perm_plot_density <- function(table_obj, main = NULL, xlab = "up - down events", ylab = "density"){
-  plot(density(test_perm$exp$up - test_perm$exp$down), main = main, xlab = xlab, ylab = ylab)
-  abline(v=test_perm$obs$up - test_perm$obs$down, col="red")
-  abline(v=quantile(test_perm$exp$up - test_perm$exp$down, 0.025), col="grey50")
-  abline(v=quantile(test_perm$exp$up - test_perm$exp$down, 0.05), col="grey75")
-  abline(v=quantile(test_perm$exp$up - test_perm$exp$down, 0.95), col="grey75")
-  abline(v=quantile(test_perm$exp$up - test_perm$exp$down, 0.975), col="grey50")
-  text(min(test_perm$exp$up - test_perm$exp$down), max(density(test_perm$exp$up - test_perm$exp$down)$y), labels = paste("emp p-val\ndownstream\n", test_perm$down))
-  text(max(test_perm$exp$up - test_perm$exp$down), max(density(test_perm$exp$up - test_perm$exp$down)$y), labels = paste("emp p-val\nupstream\n", test_perm$up))
-  legend("right", fill=c("red", "grey75", "grey50"), legend=c("observed", "90% interval", "95% interval"))
+pathway_perm_plot_density <- function(table_obj, main = NULL, xlab = "up - down events", ylab = "density", cex.lab = 1, guide = TRUE, legend = TRUE, annotate = TRUE, cex.legend = 1, cex.annotation = 1, col="black"){
+  if(is.null(main)) main <- ""
+  plot(density(table_obj$exp$up - table_obj$exp$down), main = main, xlab = xlab, ylab = ylab, cex.lab = cex.lab, col = col)
+  if(guide){
+    abline(v=table_obj$obs$up - table_obj$obs$down, col="red")
+    abline(v=quantile(table_obj$exp$up - table_obj$exp$down, 0.025), col="grey50")
+    abline(v=quantile(table_obj$exp$up - table_obj$exp$down, 0.05), col="grey75")
+    abline(v=quantile(table_obj$exp$up - table_obj$exp$down, 0.95), col="grey75")
+    abline(v=quantile(table_obj$exp$up - table_obj$exp$down, 0.975), col="grey50")
+    if(legend){
+      legend("right", fill=c("red", "grey75", "grey50"), legend=c("observed", "90% interval", "95% interval"), xjust = 1, cex = cex.legend)
+    }
+  }
+  if(annotate){
+    text(min(table_obj$exp$up - table_obj$exp$down), max(density(table_obj$exp$up - table_obj$exp$down)$y), labels = paste("\n\nemp p-val\ndownstream\n", table_obj$down), cex = cex.annotation)
+    text(max(table_obj$exp$up - table_obj$exp$down), max(density(table_obj$exp$up - table_obj$exp$down)$y), labels = paste("\n\nemp p-val\nupstream\n", table_obj$up), cex = cex.annotation)
+  }
+}
+
+##' @rdname pathway.structure.plot
+##' @examples
+##'
+##' #Plot Density Output of Permutation Test
+##' perm_table <- permutation.structure(graph, source, target, letters)
+##' pathway_perm_plot_density(perm_table)
+##' perm_table2 <- permutation.structure(graph, source, target, letters, fixed_interval = T)
+##' pathway_perm_lines_density(perm_table2, col="lightblue")
+##' @export
+pathway_perm_lines_density <- function(table_obj, col="black"){
+  lines(density(table_obj$exp$up - table_obj$exp$down), col = col)
 }
 

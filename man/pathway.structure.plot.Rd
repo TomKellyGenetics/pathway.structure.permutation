@@ -2,21 +2,29 @@
 % Please edit documentation in R/pathway.structure.plot.R
 \name{Plots for Tests of Pathway Structure in iGraph}
 \alias{Plots for Tests of Pathway Structure in iGraph}
+\alias{pathway_perm_lines_density}
 \alias{pathway_perm_plot_density}
 \alias{pathway_perm_plot_raw}
 \title{Extensions to iGraph for Plotting Pathway Structure}
 \usage{
 pathway_perm_plot_raw(table_obj, main = NULL, sub = NULL,
-  xlab = "up events", ylab = "down events", col = "black", cex = 1,
-  pch = 19)
+  xlab = "up events", ylab = "down events", cex.lab = 1, col = "black",
+  cex = 1, pch = 1)
 
 pathway_perm_plot_density(table_obj, main = NULL, xlab = "up - down events",
-  ylab = "density")
+  ylab = "density", cex.lab = 1, guide = TRUE, legend = TRUE,
+  annotate = TRUE, cex.legend = 1, cex.annotation = 1, col = "black")
+
+pathway_perm_lines_density(table_obj, col = "black")
 }
 \arguments{
-\item{table_obj}{List. Output of \code{\link[permutation.structure]{pathway.structure.permuation}}}
+\item{table_obj}{List. Output of \code{\link[permutation.structure.permutation]{pathway.structure}}}
 
-\item{main, sub, xlab, ylab, col, cex, pch}{Arguments to passs on to \code{\link[plot]{graphics}} or \code{\link[plot.density]{stats}}}
+\item{main, sub, xlab, ylab, cex.lab, col, cex, pch}{Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}}
+
+\item{guide, legend, annotate}{Logical. Whether guide lines, legend, or p-value annotation is included on the density plot. Default to TRUE.}
+
+\item{cex.legend, cex.annotation}{numeric. Relative expansion of legend and annotation test in density plot.}
 }
 \description{
 Functions to plot outcomes for testing pathway structure with permutation analysis.
@@ -45,5 +53,11 @@ pathway_perm_plot_raw(perm_table)
 
 #Plot Density Output of Permutation Test
 pathway_perm_plot_density(perm_table)
+
+#Plot Density Output of Permutation Test
+perm_table <- permutation.structure(graph, source, target, letters)
+pathway_perm_plot_density(perm_table)
+perm_table2 <- permutation.structure(graph, source, target, letters, fixed_interval = T)
+pathway_perm_lines_density(perm_table2, col="lightblue")
 }
 

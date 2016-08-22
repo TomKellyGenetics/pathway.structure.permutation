@@ -11,6 +11,7 @@
 ##' @param universe string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.
 ##' @param shortest.paths.in Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.
 ##' @param reps scalar numeric. Number of permutations to statistically test the structure of the network.
+##' @param fixed_intersect logical. Defaults to FALSE. Whether number of intersecting states is fixed to the same in permutations as the input states. 
 ##' @import igraph
 NULL
 
@@ -75,14 +76,23 @@ matrix.structure <- function(graph, target_vec, source_vec, pathway_structure_no
 ##' permutation.structure(g1, letters[1:5], letters[5:7], letters)
 ##' permutation.structure(g2, letters[1:5], letters[5:7], letters)
 ##' @export
-permutation.structure <- function(graph, target, source, universe, shortest.paths.in = NULL, reps=1000){
+permutation.structure <- function(graph, target, source, universe, shortest.paths.in = NULL, reps = 1000, fixed_intersect = FALSE){
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
   hits_up_minus_down <- rep(NA, reps)
   hits_up <- rep(NA, reps)
   hits_down <- rep(NA, reps)
   for(ii in 1:reps){
-    target_sim <- sample(universe, length(target))
-    source_sim <- sample(universe, length(source))
+    if(fixed_intersect){
+      #simulate intersect of given size
+      overlap_sim <- sample(universe, length(intersect(target, source)))
+      #sample remaining
+      target_sim <- sample(setdiff(universe, overlap_sim), length(setdiff(target, overlap_sim)))
+      source_sim <- sample(setdiff(universe, union(overlap_sim, target_sim)), length(setdiff(source, overlap_sim)))
+    } else {
+      #sample each independently
+      target_sim <- sample(universe, length(target))
+      source_sim <- sample(universe, length(source))
+    }
     test_matrix <- matrix.structure(graph, target_sim, source_sim, shortest.paths.in = shortest.paths.in)
     hits <- as.list(table(test_matrix))
     hits_down[ii] <- ifelse(is.null(hits$down), 0, hits$down)
