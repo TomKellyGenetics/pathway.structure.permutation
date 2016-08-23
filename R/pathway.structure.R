@@ -5,13 +5,14 @@
 ##'
 ##' @description Functions to compute the pathway structure of different states within a network with testing pathway structure with permutation analysis. Uses shortest paths to compute the structure between nodes of differing states. Shortest paths are computed in advance where possible to reduce computational redundancy.
 ##'
-##' @param graph An \code{\link[igraph]{igraph}} object. May be directed or weighted as long as a shortest path can be computed.
+##' @param graph An \code{\link[igraph]{igraph-package}} object. May be directed or weighted as long as a shortest path can be computed.
 ##' @param target string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.
 ##' @param source string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.
 ##' @param universe string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.
 ##' @param shortest.paths.in Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.
 ##' @param reps scalar numeric. Number of permutations to statistically test the structure of the network.
 ##' @param fixed_intersect logical. Defaults to FALSE. Whether number of intersecting states is fixed to the same in permutations as the input states. 
+##' @param remove_intersect logical. Defaults to TRUE. Whether the intersecting states are used in computing the number of upstream or downstream events.
 ##' @import igraph
 NULL
 
@@ -48,12 +49,14 @@ test.structure <- function(graph, target_node, source_node, shortest.paths.in = 
 ##' matrix.structure(g1, letters[1:5], letters[5:7])
 ##' matrix.structure(g2, letters[1:5], letters[5:7])
 ##' @export
-matrix.structure <- function(graph, target_vec, source_vec, pathway_structure_nodes=NULL, shortest.paths.in = NULL){
+matrix.structure <- function(graph, target_vec, source_vec, pathway_structure_nodes=NULL, shortest.paths.in = NULL, remove_intersect = T){
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
   if(is.null(pathway_structure_nodes)) pathway_structure_nodes <- names(V(graph))
-  overlap <- intersect(target_vec, source_vec)
-  target_vec <- setdiff(target_vec, overlap)
-  source_vec <- setdiff(source_vec, overlap)
+  if(remove_intersect){
+    overlap <- intersect(target_vec, source_vec)
+    target_vec <- setdiff(target_vec, overlap)
+    source_vec <- setdiff(source_vec, overlap)
+  }
   test_matrix <- matrix(NA, nrow=length(target_vec[target_vec %in% pathway_structure_nodes]),
                         ncol=length(source_vec[source_vec %in% pathway_structure_nodes]))
   dim(test_matrix)
@@ -83,7 +86,7 @@ matrix.structure <- function(graph, target_vec, source_vec, pathway_structure_no
 ##' permutation.structure(g1, letters[1:5], letters[5:7], letters)
 ##' permutation.structure(g2, letters[1:5], letters[5:7], letters)
 ##' @export
-permutation.structure <- function(graph, target, source, universe, shortest.paths.in = NULL, reps = 1000, fixed_intersect = FALSE){
+permutation.structure <- function(graph, target, source, universe, shortest.paths.in = NULL, reps = 1000, fixed_intersect = FALSE, remove_intersect = T){
   if(is.null(shortest.paths.in)) shortest.paths.in <- shortest.paths(graph, mode="in")
   hits_up_minus_down <- rep(NA, reps)
   hits_up <- rep(NA, reps)
@@ -100,7 +103,7 @@ permutation.structure <- function(graph, target, source, universe, shortest.path
       target_sim <- sample(universe, length(target))
       source_sim <- sample(universe, length(source))
     }
-    test_matrix <- matrix.structure(graph, target_sim, source_sim, shortest.paths.in = shortest.paths.in)
+    test_matrix <- matrix.structure(graph, target_sim, source_sim, shortest.paths.in = shortest.paths.in, remove_intersect = remove_intersect)
     hits <- as.list(table(test_matrix))
     hits_down[ii] <- ifelse(is.null(hits$down), 0, hits$down)
     hits_up[ii] <- ifelse(is.null(hits$up), 0, hits$up)

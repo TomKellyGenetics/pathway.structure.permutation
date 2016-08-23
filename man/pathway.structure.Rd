@@ -10,15 +10,19 @@
 test.structure(graph, target_node, source_node, shortest.paths.in = NULL)
 
 matrix.structure(graph, target_vec, source_vec,
-  pathway_structure_nodes = NULL, shortest.paths.in = NULL)
+  pathway_structure_nodes = NULL, shortest.paths.in = NULL,
+  remove_intersect = T)
 
 permutation.structure(graph, target, source, universe,
-  shortest.paths.in = NULL, reps = 1000, fixed_intersect = FALSE)
+  shortest.paths.in = NULL, reps = 1000, fixed_intersect = FALSE,
+  remove_intersect = T)
 }
 \arguments{
-\item{graph}{An \code{\link[igraph]{igraph}} object. May be directed or weighted as long as a shortest path can be computed.}
+\item{graph}{An \code{\link[igraph]{igraph-package}} object. May be directed or weighted as long as a shortest path can be computed.}
 
 \item{shortest.paths.in}{Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.}
+
+\item{remove_intersect}{logical. Defaults to TRUE. Whether the intersecting states are used in computing the number of upstream or downstream events.}
 
 \item{target}{string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.}
 
