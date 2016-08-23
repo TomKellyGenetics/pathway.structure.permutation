@@ -109,8 +109,8 @@ permutation.structure <- function(graph, target, source, universe, shortest.path
   }
   test_matrix <- matrix.structure(graph, target, source, shortest.paths.in = shortest.paths.in)
   hits <- as.list(table(test_matrix))
-  is.null(hits$up)) hits$up <- 0
-  s.null(hits$down)) hits$down <- 0
+  if(is.null(hits$up)) hits$up <- 0
+  if(is.null(hits$down)) hits$down <- 0
   hits$up - hits$down
   print(paste(sum(hits$up - hits$down < hits_up_minus_down) / length(hits_up_minus_down), "target upstream"))
   print(paste(sum(hits_up_minus_down < hits$up - hits$down) / length(hits_up_minus_down), "target downstream"))
