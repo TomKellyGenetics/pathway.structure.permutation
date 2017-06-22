@@ -8,7 +8,7 @@
 ##'
 ##' @param table_obj List. Output of \code{\link[permutation.structure.permutation]{pathway.structure}}
 ##' @param method Specifies metric for comparision of up and down events: "absolute" (1) for difference or "relative" (2) ratio. May be given as a character or numeric input. Defaults to absolute.
-##' @param main,sub,xlab,ylab,cex.lab,col,cex,pch Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}
+##' @param main,sub,xlab,ylab,xlim,ylim,cex.lab,col,cex,pch Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}
 ##' @param guide,legend,annotate Logical. Whether guide lines, legend, or p-value annotation is included on the density plot. Default to TRUE.
 ##' @param cex.legend,cex.annotation numeric. Relative expansion of legend and annotation test in density plot.
 ##' @import igraph
@@ -37,13 +37,13 @@ NULL
 ##' #Plot Density Output of Permutation Test
 ##' pathway_perm_plot_density(perm_table)
 ##' @export
-pathway_perm_plot_density <- function(table_obj, method = "absolute", main = NULL, sub = NULL, xlab = "up - down events", ylab = "density", cex.lab = 1, guide = TRUE, legend = TRUE, annotate = TRUE, cex.legend = 1, cex.annotation = 1, col="black"){
+pathway_perm_plot_density <- function(table_obj, method = "absolute", main = NULL, sub = NULL, xlab = "up - down events", ylab = "density", xlim=NULL, ylim=NULL, cex.lab = 1, guide = TRUE, legend = TRUE, annotate = TRUE, cex.legend = 1, cex.annotation = 1, col="black"){
   if(is.numeric(method)) method <- c("absolute", "relative")[method]
   if(is.character(method)) method <- tolower(method)
   if(is.na(method) || is.null(method) || method == "") method <- "absolute"
   if(is.null(main)) main <- ""
   if(method == "absolute"){
-    plot(density(table_obj$exp$up - table_obj$exp$down), main = main, sub = sub, xlab = xlab, ylab = ylab, cex.lab = cex.lab, col = col)
+    plot(density(table_obj$exp$up - table_obj$exp$down), main = main, sub = sub, xlab = xlab, ylab = ylab, xlim=xlim, ylim=ylim, cex.lab = cex.lab, col = col)
     if(guide){
       abline(v=table_obj$obs$up - table_obj$obs$down, col="red")
       abline(v=quantile(table_obj$exp$up - table_obj$exp$down, 0.025), col="grey50")
@@ -59,7 +59,7 @@ pathway_perm_plot_density <- function(table_obj, method = "absolute", main = NUL
       text(max(table_obj$exp$up - table_obj$exp$down), max(density(table_obj$exp$up - table_obj$exp$down)$y), labels = paste("\n\nemp p-val\nupstream\n", sum(table_obj$exp$up - table_obj$exp$down < table_obj$obs$up - table_obj$obs$down) / length(table_obj$exp$up)), cex = cex.annotation)
     }
   } else if(method == "relative"){
-    plot(density(table_obj$exp$up / table_obj$exp$down), main = main, sub = sub, xlab = xlab, ylab = ylab, cex.lab = cex.lab, col = col)
+    plot(density(table_obj$exp$up / table_obj$exp$down), main = main, sub = sub, xlab = xlab, ylab = ylab, xlim=xlim, ylim=ylim, cex.lab = cex.lab, col = col)
     if(guide){
       abline(v=table_obj$obs$up / table_obj$obs$down, col="red")
       abline(v=quantile(table_obj$exp$up / table_obj$exp$down, 0.025), col="grey50")

@@ -2,9 +2,9 @@
 % Please edit documentation in R/pathway.structure.R
 \name{Tests of Pathway Structure in iGraph}
 \alias{Tests of Pathway Structure in iGraph}
+\alias{test.structure}
 \alias{matrix.structure}
 \alias{permutation.structure}
-\alias{test.structure}
 \title{Extensions to iGraph for Pathway Structure}
 \usage{
 test.structure(graph, target_node, source_node, shortest.paths.in = NULL)
@@ -58,4 +58,3 @@ matrix.structure(g2, letters[1:5], letters[5:7])
 permutation.structure(g1, letters[1:5], letters[5:7], letters)
 permutation.structure(g2, letters[1:5], letters[5:7], letters)
 }
-

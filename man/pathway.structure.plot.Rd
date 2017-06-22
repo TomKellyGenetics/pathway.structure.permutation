@@ -2,16 +2,16 @@
 % Please edit documentation in R/pathway.structure.plot.R
 \name{Plots for Tests of Pathway Structure in iGraph}
 \alias{Plots for Tests of Pathway Structure in iGraph}
-\alias{pathway_perm_lines_density}
 \alias{pathway_perm_plot_density}
+\alias{pathway_perm_lines_density}
 \alias{pathway_perm_plot_raw}
 \alias{permutation.structure.proportion}
 \title{Extensions to iGraph for Plotting Pathway Structure}
 \usage{
 pathway_perm_plot_density(table_obj, method = "absolute", main = NULL,
-  sub = NULL, xlab = "up - down events", ylab = "density", cex.lab = 1,
-  guide = TRUE, legend = TRUE, annotate = TRUE, cex.legend = 1,
-  cex.annotation = 1, col = "black")
+  sub = NULL, xlab = "up - down events", ylab = "density", xlim = NULL,
+  ylim = NULL, cex.lab = 1, guide = TRUE, legend = TRUE,
+  annotate = TRUE, cex.legend = 1, cex.annotation = 1, col = "black")
 
 pathway_perm_lines_density(table_obj, method = "absolute", col = "black")
 
@@ -26,7 +26,7 @@ permutation.structure.proportion(table_obj, method = "absolute")
 
 \item{method}{Specifies metric for comparision of up and down events: "absolute" (1) for difference or "relative" (2) ratio. May be given as a character or numeric input. Defaults to absolute.}
 
-\item{main, sub, xlab, ylab, cex.lab, col, cex, pch}{Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}}
+\item{main, sub, xlab, ylab, xlim, ylim, cex.lab, col, cex, pch}{Arguments to pass on to \code{\link[graphics]{plot}} or \code{\link[stats]{plot.density}}}
 
 \item{guide, legend, annotate}{Logical. Whether guide lines, legend, or p-value annotation is included on the density plot. Default to TRUE.}
 
@@ -69,4 +69,3 @@ pathway_perm_plot_raw(perm_table)
 permutation.structure.proportion(perm_table) # defaults to absolute
 permutation.structure.proportion(perm_table, method = "relative")
 }
-
