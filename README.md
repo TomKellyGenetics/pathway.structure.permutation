@@ -1,3 +1,6 @@
+[![Travis-CI Build Status](https://travis-ci.org/TomKellyGenetics/pathway.structure.permutation.svg?branch=master)](https://travis-ci.org/TomKellyGenetics/pathway.structure.permutation)
+
+
 To get the iGraph package from CRAN:
 
 ```R
