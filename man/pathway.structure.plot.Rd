@@ -63,7 +63,7 @@ pathway_perm_plot_density(perm_table)
 #Plot Density Output of Permutation Test
 perm_table <- permutation.structure(graph, source, target, letters)
 pathway_perm_plot_density(perm_table)
-perm_table2 <- permutation.structure(graph, source, target, letters, fixed_intersect = T)
+perm_table2 <- permutation.structure(graph, source, target, letters, fixed_intersect = TRUE)
 pathway_perm_lines_density(perm_table2, col="lightblue")
 
 #Plot Raw Output of Permutation Test
