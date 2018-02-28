@@ -6,9 +6,10 @@
 ##' @description Functions to compute the pathway structure of different states within a network with testing pathway structure with permutation analysis. Uses shortest paths to compute the structure between nodes of differing states. Shortest paths are computed in advance where possible to reduce computational redundancy.
 ##'
 ##' @param graph An \code{\link[igraph]{igraph-package}} object. May be directed or weighted as long as a shortest path can be computed.
-##' @param target string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.
-##' @param source string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.
+##' @param target,target_node,target_vec string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.
+##' @param source,source_node,source_vec string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.
 ##' @param universe string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.
+##' @param pathway_structure_nodes Defaults to NULL as uses all nodes in the graph. Gives the nodes for which paths are used to evaluate pathway structure.
 ##' @param shortest.paths.in Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.
 ##' @param reps scalar numeric. Number of permutations to statistically test the structure of the network.
 ##' @param fixed_intersect logical. Defaults to FALSE. Whether number of intersecting states is fixed to the same in permutations as the input states. 

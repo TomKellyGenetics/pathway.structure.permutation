@@ -22,11 +22,13 @@ permutation.structure(graph, target, source, universe,
 
 \item{shortest.paths.in}{Defaults to NULL leading to computing the shortest paths from the input graph where necessary, these may be given as computed in advance (or passed from higher functions) to reduce computational redundancy.}
 
+\item{pathway_structure_nodes}{Defaults to NULL as uses all nodes in the graph. Gives the nodes for which paths are used to evaluate pathway structure.}
+
 \item{remove_intersect}{logical. Defaults to TRUE. Whether the intersecting states are used in computing the number of upstream or downstream events.}
 
-\item{target}{string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.}
+\item{target, target_node, target_vec}{string: vector of target states for testing pathway structure. Must be a single string for target_node. These are cross referenced against V(graph)$name.}
 
-\item{source}{string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.}
+\item{source, source_node, source_vec}{string: vector of source states for testing pathway structure. Must be a single string for source_node. These are cross referenced against V(graph)$name.}
 
 \item{universe}{string vector of potential nodes to be assigned target and\/or source states. This may be V(graph)$name, and subset thereof, or a larger pool of nodes to assign states for permutation analysis.}
 
