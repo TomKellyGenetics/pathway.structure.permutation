@@ -102,7 +102,7 @@ pathway_perm_lines_density <- function(table_obj, method = "absolute", col="blac
   if(method == "absolute"){
     lines(density(table_obj$exp$up - table_obj$exp$down), col = col)
   } else if(method == "relative"){
-    plines(density(table_obj$exp$up / table_obj$exp$down), col = col)
+    lines(density(table_obj$exp$up / table_obj$exp$down), col = col)
   } else {
     warning("Please give a valid method: absolute or relative")
     stop()
