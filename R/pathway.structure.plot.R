@@ -31,8 +31,11 @@ NULL
 ##' target <- sample(letters, 10)
 ##' V(graph)$color <- ifelse(names(V(graph)) %in% source, "lightblue", "grey75")  
 ##' V(graph)$color <- ifelse(names(V(graph)) %in% target, "palevioletred", V(graph)$color)  
-##' V(graph)$color <- ifelse(names(V(graph)) %in% intersect(source, target), "mediumpurple2", V(graph)$color)  
-##' plot(graph, layout = layout.fruchterman.reingold, vertex.color= V(graph)$color, vertex.label.family = "mono", vertex.size = 10, vertex.label.color = "black", vertex.frame.color= "grey50", main = graph$name)
+##' V(graph)$color <- ifelse(names(V(graph)) %in% intersect(source, target),
+##'                          "mediumpurple2", V(graph)$color)  
+##' plot(graph, layout = layout.fruchterman.reingold, vertex.color= V(graph)$color, 
+##'     vertex.label.family = "mono", vertex.size = 10, vertex.label.color = "black", 
+##'     vertex.frame.color= "grey50", main = graph$name)
 ##' matrix.structure(graph, source, target)
 ##' table(matrix.structure(graph, source, target))
 ##' perm_table <- permutation.structure(graph, source, target, letters)
