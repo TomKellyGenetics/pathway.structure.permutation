@@ -13,7 +13,8 @@
 ##' @param cex.legend,cex.annotation numeric. Relative expansion of legend and annotation test in density plot.
 ##' @import igraph
 ##' @importFrom graphics abline legend lines plot points text
-##'@ importFrom stats density quantile
+##' @importFrom stats density quantile
+
 NULL
 
 ##' @rdname pathway.structure.plot
